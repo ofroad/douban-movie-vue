@@ -29,7 +29,7 @@ const routes=[
 	{path:'/intheaters', name:'intheaters', component:Intheaters },
 	{path:'/comingsoon', name:'comingsoon', component:Comingsoon },
 	{path:'/top250', name:'top250', component:Top250 },
-	{path: '/movie/subject/:id', name:'subject-detail', component:Detail},
+	{path: '/movie/:id', name:'subject-detail', component:Detail},
 	{path:'*', name:'page404', component: Page404 },
 ]
 

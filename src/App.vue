@@ -14,6 +14,7 @@ import Dhead from './components/Dhead'
 import Dfoot from './components/Dfoot'
 import Dnav from './components/Dnav'
 
+
 export default{
 	name:'app',
 	components:{

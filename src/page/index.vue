@@ -1,62 +1,73 @@
 <template>
-	<div class="wrap-main">
-		<div class="wrap-list-comm" v-if="intheaters.length>0">
-			<div class="list-comm-tit clear-float">
-				<h3>正在热映</h3>
-				<router-link to="/intheaters">更多&gt;&gt;</router-link>
+	<div>
+		<div class="wrap-main">
+			<div class="wrap-list-comm" v-if="intheaters.length>0">
+				<div class="list-comm-tit clear-float">
+					<h3>正在热映</h3>
+					<router-link to="/intheaters">更多&gt;&gt;</router-link>
+				</div>
+				<div class="box-list-comm">
+					<ul class="list-comm-main clear-float">
+						<li v-for="item in intheaters">
+							<router-link :to="{name:'subject-detail',params:{id:item.id}}" class="movie-cover"><img :src="item.images.medium" /></router-link>
+							<router-link :to="{name:'subject-detail',params:{id:item.id}}" class="movie-name">{{item.title}}</router-link>
+						</li>
+					</ul>
+				</div>
 			</div>
-			<div class="box-list-comm">
-				<ul class="list-comm-main clear-float">
-					<li v-for="item in intheaters">
-						<router-link :to="{name:'subject-detail',params:{id:item.id}}" class="movie-cover"><img :src="item.images.medium" /></router-link>
-						<router-link :to="{name:'subject-detail',params:{id:item.id}}" class="movie-name">{{item.title}}</router-link>
-					</li>
-				</ul>
+			
+			<div class="wrap-list-comm" v-if="comingsoon.length>0">
+				<div class="list-comm-tit clear-float">
+					<h3>即将上映</h3>
+					<router-link to="/comingsoon">更多&gt;&gt;</router-link>
+				</div>
+				<div class="box-list-comm">
+					<ul class="list-comm-main clear-float">
+						<li v-for="item in comingsoon">
+							<router-link :to="{name:'subject-detail',params:{id:item.id}}" class="movie-cover"><img :src="item.images.medium" /></router-link>
+							<router-link :to="{name:'subject-detail',params:{id:item.id}}" class="movie-name">{{item.title}}</router-link>
+						</li>
+					</ul>
+				</div>
+			</div>
+			
+			<div class="wrap-list-comm" v-if="top250.length>0">
+				<div class="list-comm-tit clear-float">
+					<h3>Top250</h3>
+					<router-link to="/top250">更多&gt;&gt;</router-link>
+				</div>
+				<div class="box-list-comm">
+					<ul class="list-comm-main clear-float">
+						<li v-for="item in top250">
+							<router-link :to="{name:'subject-detail',params:{id:item.id}}" class="movie-cover"><img :src="item.images.medium" /></router-link>
+							<router-link :to="{name:'subject-detail',params:{id:item.id}}" class="movie-name">{{item.title}}</router-link>
+						</li>
+					</ul>
+				</div>
 			</div>
 		</div>
-		
-		<div class="wrap-list-comm" v-if="comingsoon.length>0">
-			<div class="list-comm-tit clear-float">
-				<h3>即将上映</h3>
-				<router-link to="/comingsoon">更多&gt;&gt;</router-link>
-			</div>
-			<div class="box-list-comm">
-				<ul class="list-comm-main clear-float">
-					<li v-for="item in comingsoon">
-						<router-link :to="{name:'subject-detail',params:{id:item.id}}" class="movie-cover"><img :src="item.images.medium" /></router-link>
-						<router-link :to="{name:'subject-detail',params:{id:item.id}}" class="movie-name">{{item.title}}</router-link>
-					</li>
-				</ul>
-			</div>
-		</div>
-		
-		<div class="wrap-list-comm" v-if="top250.length>0">
-			<div class="list-comm-tit clear-float">
-				<h3>Top250</h3>
-				<router-link to="/top250">更多&gt;&gt;</router-link>
-			</div>
-			<div class="box-list-comm">
-				<ul class="list-comm-main clear-float">
-					<li v-for="item in top250">
-						<router-link :to="{name:'subject-detail',params:{id:item.id}}" class="movie-cover"><img :src="item.images.medium" /></router-link>
-						<router-link :to="{name:'subject-detail',params:{id:item.id}}" class="movie-name">{{item.title}}</router-link>
-					</li>
-				</ul>
-			</div>
-		</div>
+		<dloading v-show="loading"></dloading>
+		<neterror v-show="neterrorshow"></neterror>
 	</div>
+	
 </template>
 
 <script>
 import axios from 'axios';
+import Dloading from '../components/Dloading'
+import Neterror from '../components/Neterror'
+import Nodata from '../components/Nodata'
 
 export default{
-	name:'dhead',
+	name:'index',
+	components:{Dloading,Neterror,Nodata},
 	data(){
 		return{
 			intheaters:[],
 			comingsoon:[],
-			top250:[]
+			top250:[],
+			loading:true,
+			neterrorshow:false
 		}
 	},
 	methods:{
@@ -83,9 +94,12 @@ export default{
 				that.comingsoon=that.comingsoon.concat(comingsoon.data.subjects);
 				that.top250=that.top250.concat(top250.data.subjects);
 				//console.log(that.intheaters);
+				that.loading=false;
 			}))
 			.catch(function (error) {
 				console.log(error);
+				that.loading=false;
+				that.neterrorshow=true;
 			});
 		}
 	},
@@ -112,8 +126,10 @@ export default{
 .list-comm-tit{border-bottom:1px solid #ccc;}
 .list-comm-tit h3{float:left;}
 .list-comm-tit a{float:right;}
+/*
 .box-list-comm{}
 .list-comm-main{}
+*/
 .list-comm-main li{float:left; width:180px; margin:16px 20px 0 0;}
 .movie-cover{display:block; overflow:hidden; width:100%; overflow:hidden; height:257px;}
 .movie-cover img{display:block; width:100%;}

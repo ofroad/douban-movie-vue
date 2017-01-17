@@ -1,22 +1,54 @@
 <template>
 	<div class="wrap-main">
-
-		{{this.id}}	
+		<div class="wrap-detail clear-float">
+		{{ moviedetail.data }}
+		</div>
+		<div class="wrap-detail clear-float">
+		{{ moviedetail.data }}
+		</div>
+		<div class="wrap-detail clear-float">
+		{{ moviedetail.data.title }}
+		</div>
+		<dloading v-show="loading"></dloading>
+		<neterror v-show="neterrorshow"></neterror>
 	</div>
 </template>
 
 <script>
 import axios from 'axios';
+import Dloading from '../components/Dloading'
+import Neterror from '../components/Neterror'
 
 export default{
 	name:'dhead',
+	components:{Dloading,Neterror},
 	data(){
 		return{
-			id:""
+			id:"",
+			moviedetail:{},
+			loading:true,
+			neterrorshow:false
 		}
 	},
 	methods:{
-		
+		getMovieDetail(){
+			console.log("执行getMovieDetail");
+			var that=this;
+			axios.get("/api/movie/subject/"+that.id)
+			.then(function (response) {
+				console.log(response);
+				that.moviedetail=response;
+				that.loading=false;
+				console.log("======that.moviedetail======");
+				console.log(that.moviedetail);
+				
+			})
+			.catch(function (error) {
+				console.log(error);
+				that.loading=false;
+				that.neterrorshow=true;
+			});
+		}
 	},
 	beforeCreate:function(){
 		console.log("beforeCreate");
@@ -29,10 +61,12 @@ export default{
 	beforeMount:function(){
 		console.log("beforeMount");
 		console.log(this.$route);
-		this.id=this.$route.params.id;
+		
 	},
-	mounted:function(){
-		//this.getmovieByindex();
+	mounted(){
+		this.id=this.$route.params.id;
+		console.log("执行mounted");
+		this.getMovieDetail();
 	}
 	
 }
@@ -40,20 +74,8 @@ export default{
 
 
 <style>
-.wrap-list-comm{padding:0 0 36px 0;}
-.list-comm-tit{border-bottom:1px solid #ccc;}
-.list-comm-tit h3{float:left;}
-.list-comm-tit a{float:right;}
-.box-list-comm{}
-.list-comm-main{}
-.list-comm-main li{float:left; width:180px; margin:16px 20px 0 0;}
-.movie-cover{display:block; overflow:hidden; width:100%; overflow:hidden; height:257px;}
-.movie-cover img{display:block; width:100%;}
-.movie-name{
-	display:block; overflow:hidden; text-overflow:ellipsis;
-	white-space:nowrap; text-align:center;
-}
-
+.wrap-detail{}
+.detail-cover{float:left;}
 
 
 
