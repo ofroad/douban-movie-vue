@@ -12,7 +12,9 @@
 					</li>
 				</ul>
 			</div>
+			<span @click="getMovieBytop250()">加载更多</span>
 		</div>
+		
 		<dloading v-show="loading"></dloading>
 		<neterror v-show="neterrorshow"></neterror>
 		<nodata v-show="nodatashow"></nodata>
@@ -34,16 +36,27 @@ export default{
 			top250:[],
 			loading:true,
 			neterrorshow:false,
-			nodatashow:false
+			nodatashow:false,
+			m:0,
+			i:0
 		}
 	},
 	methods:{
 		getMovieBytop250(){
 			var that=this;
-			axios.get("/api/movie/top250")
+			
+			console.log(that.i);
+			axios.get("/api/movie/top250",{
+				params:{
+					start:(that.m)*that.i,
+					count:20
+				}
+			})
 			.then(function (response) {
 				console.log(response);
 				that.top250=that.top250.concat(response.data.subjects);
+				that.m=response.data.count;
+				that.i=(that.i)+1;
 				if(!response.data.subjects.length){
 					that.nodatashow=true;
 				}
@@ -54,6 +67,9 @@ export default{
 				that.loading=false;
 				that.neterrorshow=true;
 			});
+		},
+		getMovieMore(){
+			//this.getMovieBytop250();
 		}
 	},
 	beforeCreate:function(){
