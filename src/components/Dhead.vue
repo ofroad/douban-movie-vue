@@ -2,18 +2,25 @@
 	<div id="wrap-header" class="clear-float">
 		<h1 class="logo" title="豆瓣电影"><router-link to="/index">豆瓣电影</router-link></h1>
 		<div class="wrap-search">
-			<input type="text" />
-			<span>搜索</span>
+			<input type="text" v-model="key" @keyup.enter="searchMovie()" placeholder="请输入搜索内容" />
+			<span @click="searchMovie()">搜索</span>
 		</div>
 	</div>
 </template>
 
 <script>
 export default{
-	name:'dhead',
+	name:'search',
 	data(){
 		return{
-			msg:'Welcome to Your Vue.js App'
+			 key:'',
+			 path:"/movie/search"
+		}
+	},
+	methods:{
+		searchMovie(){
+			this.$router.push({path:this.path, query:{key:this.key.trim()}});
+            this.key='';
 		}
 	}
 }

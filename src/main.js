@@ -19,7 +19,8 @@ const Index=require('./page/index')
 const Intheaters=require('./page/intheaters')
 const Comingsoon=require('./page/comingsoon')
 const Top250=require('./page/top250')
-const Detail=require('./page/detail')
+const DDetail=require('./page/dddetail')
+const Dsearch=require('./page/search')
 const Page404 = require('./page/page404')
 
 //路由
@@ -29,7 +30,8 @@ const routes=[
 	{path:'/intheaters', name:'intheaters', component:Intheaters },
 	{path:'/comingsoon', name:'comingsoon', component:Comingsoon },
 	{path:'/top250', name:'top250', component:Top250 },
-	{path: '/movie/:id', name:'subject-detail', component:Detail},
+	{path: '/movie/subject/:id', name:'subject-detail', component:DDetail},
+	{path: '/movie/search', name:'search', component:Dsearch},
 	{path:'*', name:'page404', component: Page404 },
 ]
 

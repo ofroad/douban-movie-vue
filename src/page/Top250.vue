@@ -8,7 +8,7 @@
 				<ul class="list-comm-main clear-float">
 					<li v-for="item in top250">
 						<router-link :to="{name:'subject-detail',params:{id:item.id}}" class="movie-cover"><img :src="item.images.medium" /></router-link>
-						<router-link :to="{name:'subject-detail',params:{id:item.id}}" class="movie-name">{{item.title}}</router-link>
+						<router-link :to="{name:'subject-detail',params:{id:item.id}}" class="movie-name" :title="item.title">{{item.title}}</router-link>
 					</li>
 				</ul>
 			</div>

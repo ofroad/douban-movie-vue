@@ -1,12 +1,12 @@
 <template>
 	<div class="wrap-main">
-		<div class="wrap-list-comm" v-if="comingsoon.length>0">
+		<div class="wrap-list-comm" v-if="sch.length>0">
 			<div class="list-comm-tit clear-float">
-				<h3>即将上映</h3>
+				<h3>"{{this.$route.query.key}}"的搜索结果</h3>
 			</div>
 			<div class="box-list-comm">
 				<ul class="list-comm-main clear-float">
-					<li v-for="item in comingsoon">
+					<li v-for="item in sch">
 						<router-link :to="{name:'subject-detail',params:{id:item.id}}" class="movie-cover"><img :src="item.images.medium" /></router-link>
 						<router-link :to="{name:'subject-detail',params:{id:item.id}}" class="movie-name" :title="item.title">{{item.title}}</router-link>
 					</li>
@@ -31,19 +31,19 @@ export default{
 	components:{Dloading,Neterror,Nodata},
 	data(){
 		return{
-			comingsoon:[],
+			sch:[],
 			loading:true,
 			neterrorshow:false,
 			nodatashow:false
 		}
 	},
 	methods:{
-		getMovieBycomingsoon(){
+		getMovieBySch(key){
 			var that=this;
-			axios.get("/api/movie/coming_soon")
+			axios.get("/api/movie/search?q="+key)
 			.then(function (response) {
 				console.log(response);
-				that.comingsoon=that.comingsoon.concat(response.data.subjects);
+				that.sch=that.sch.concat(response.data.subjects);
 				if(!response.data.subjects.length){
 					that.nodatashow=true;
 				}
@@ -61,13 +61,15 @@ export default{
 	},
 	created:function(){
 		console.log("created");
+		console.log(this.$route)
 	},
 	beforeMount:function(){
 		console.log("beforeMount");
 	},
 	mounted:function(){
 		console.log("mounted");
-		this.getMovieBycomingsoon();
+		var key=this.$route.query.key;
+		this.getMovieBySch(key);
 	}
 	
 }
