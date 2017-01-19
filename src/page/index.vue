@@ -59,7 +59,7 @@ import Neterror from '../components/Neterror'
 import Nodata from '../components/Nodata'
 
 export default{
-	name:'index',
+	name:'Index',
 	components:{Dloading,Neterror,Nodata},
 	data(){
 		return{

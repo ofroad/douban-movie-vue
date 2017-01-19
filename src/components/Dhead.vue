@@ -2,7 +2,7 @@
 	<div id="wrap-header" class="clear-float">
 		<h1 class="logo" title="豆瓣电影"><router-link to="/index">豆瓣电影</router-link></h1>
 		<div class="wrap-search">
-			<input type="text" v-model="key" @keyup.enter="searchMovie()" placeholder="请输入搜索内容" />
+			<input id="inp-sch" type="text" v-model="key" @keyup.enter="searchMovie()" placeholder="请输入搜索内容" />
 			<span @click="searchMovie()">搜索</span>
 		</div>
 	</div>
@@ -10,7 +10,6 @@
 
 <script>
 export default{
-	name:'search',
 	data(){
 		return{
 			 key:'',
@@ -19,6 +18,12 @@ export default{
 	},
 	methods:{
 		searchMovie(){
+			var kw=this.key.trim(),$inp=this.$el.querySelector('#inp-sch');
+			if(!kw.length){
+				//处理未输入查询关键字
+				$inp.focus();
+				return;
+			}
 			this.$router.push({path:this.path, query:{key:this.key.trim()}});
             this.key='';
 		}

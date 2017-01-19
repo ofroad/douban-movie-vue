@@ -27,7 +27,7 @@ import Neterror from '../components/Neterror'
 import Nodata from '../components/Nodata'
 
 export default{
-	name:'zz',
+	name:'Searchlist',
 	components:{Dloading,Neterror,Nodata},
 	data(){
 		return{

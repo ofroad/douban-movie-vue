@@ -12,12 +12,14 @@
 					</li>
 				</ul>
 			</div>
-			<span @click="getMovieBytop250()">加载更多</span>
+			
 		</div>
-		
-		<dloading v-show="loading"></dloading>
+		<span id="btn-loadmore" v-show="showloadmore" @click="getMovieBytop250()">加载更多</span>
+		<dloading :showloading="loading"></dloading><!--loading使用prop传递数据-->
 		<neterror v-show="neterrorshow"></neterror>
+		<!--
 		<nodata v-show="nodatashow"></nodata>
+		-->
 	</div>
 	
 </template>
@@ -29,7 +31,7 @@ import Neterror from '../components/Neterror'
 import Nodata from '../components/Nodata'
 
 export default{
-	name:'zz',
+	name:'Top250',
 	components:{Dloading,Neterror,Nodata},
 	data(){
 		return{
@@ -38,14 +40,24 @@ export default{
 			neterrorshow:false,
 			nodatashow:false,
 			m:0,
-			i:0
+			i:0,
+			canloaddata:true,
+			showloadmore:false
 		}
 	},
 	methods:{
 		getMovieBytop250(){
 			var that=this;
+			if(!that.canloaddata){
+				console.log("当前加载按钮禁用");
+				return;
+			}
 			
+			console.log("当前加载按钮可以用--开始请求数据");
 			console.log(that.i);
+			that.canloaddata=false;
+			console.log(that.$el.querySelector('#btn-loadmore'))
+			that.$el.querySelector('#btn-loadmore').textContent="数据加载中...";
 			axios.get("/api/movie/top250",{
 				params:{
 					start:(that.m)*that.i,
@@ -53,23 +65,32 @@ export default{
 				}
 			})
 			.then(function (response) {
+				console.log("数据成功返回");
 				console.log(response);
 				that.top250=that.top250.concat(response.data.subjects);
 				that.m=response.data.count;
-				that.i=(that.i)+1;
-				if(!response.data.subjects.length){
-					that.nodatashow=true;
-				}
+
 				that.loading=false;
+				that.showloadmore=true;
+				that.canloaddata=true;
+				that.$el.querySelector('#btn-loadmore').textContent="加载更多";
+				
+				if((that.i+1)*that.m > response.data.total){
+					that.showloadmore=false;
+				}else{
+					that.showloadmore=true;
+				}
+				
+				that.i=(that.i)+1;
 			})
 			.catch(function (error) {
+				console.log("请求报错");
 				console.log(error);
 				that.loading=false;
 				that.neterrorshow=true;
+				that.canloaddata=true;
+				that.$el.querySelector('#btn-loadmore').textContent="加载更多";
 			});
-		},
-		getMovieMore(){
-			//this.getMovieBytop250();
 		}
 	},
 	beforeCreate:function(){
@@ -83,7 +104,10 @@ export default{
 	},
 	mounted:function(){
 		console.log("mounted");
-		this.getMovieBytop250();
+		this.$nextTick(function(){
+			this.getMovieBytop250();
+		});
+		
 	}
 	
 }
@@ -92,6 +116,9 @@ export default{
 
 
 <style>
+#btn-loadmore{display:block; margin:30px 0 0 0; border:1px solid #ccc; text-align:center; cursor:pointer;}
+
+
 
 
 </style>

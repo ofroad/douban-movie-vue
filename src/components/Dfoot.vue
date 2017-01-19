@@ -6,7 +6,7 @@
 
 <script>
 export default{
-	name:'dfoot',
+	name:'Dfoot',
 	data(){
 		return{
 			msg:'Welcome to Your Vue.js App'

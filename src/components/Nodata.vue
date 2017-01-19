@@ -4,7 +4,7 @@
 
 <script>
 export default{
-	name:'dloading',
+	name:'Nodata',
 	data(){
 		return{
 			msg:'Welcome to Your Vue.js App'

@@ -30,6 +30,7 @@ import Dloading from '../components/Dloading'
 import Neterror from '../components/Neterror'
 
 export default{
+	name:'Detail',
 	components:{Dloading,Neterror},
 	data(){
 		return{

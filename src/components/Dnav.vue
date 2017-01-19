@@ -11,7 +11,7 @@
 
 <script>
 export default{
-	name:'dhead',
+	name:'Dnav',
 	data(){
 		return{
 			msg:'Welcome to Your Vue.js App'

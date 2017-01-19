@@ -4,7 +4,7 @@
 
 <script>
 export default{
-	name:'dloading',
+	name:'Neterror',
 	data(){
 		return{
 			msg:'Welcome to Your Vue.js App'
