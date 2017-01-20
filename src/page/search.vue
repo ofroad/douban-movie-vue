@@ -13,9 +13,12 @@
 				</ul>
 			</div>
 		</div>
+		<span id="btn-loadmore" v-show="showloadmore" @click="getMovieBySch">加载更多</span>
 		<dloading v-show="loading"></dloading>
 		<neterror v-show="neterrorshow"></neterror>
+		<!--
 		<nodata v-show="nodatashow"></nodata>
+		-->
 	</div>
 	
 </template>
@@ -34,25 +37,71 @@ export default{
 			sch:[],
 			loading:true,
 			neterrorshow:false,
-			nodatashow:false
+			m:0,
+			i:0,
+			canloaddata:true,
+			showloadmore:false,
+			key:this.$route.query.key
 		}
 	},
+	//增加watch路由,使得能够在搜索结果页再次搜索时能重新请求数据
+	watch:{
+		'$route':'loadsch'
+	},
 	methods:{
-		getMovieBySch(key){
+		loadsch(){
+			this.sch=[];
+			this.m=0;
+			this.i=0;
+			this.key=this.$route.query.key;
+			this.getMovieBySch();
+		},
+		getMovieBySch(){
 			var that=this;
-			axios.get("/api/movie/search?q="+key)
+			if(!that.canloaddata){
+				console.log("当前加载按钮禁用");
+				return;
+			}
+			
+			console.log("当前加载按钮可以用--开始请求数据");
+			console.log(that.i);
+			that.canloaddata=false;
+			console.log(that.$el.querySelector('#btn-loadmore'))
+			that.$el.querySelector('#btn-loadmore').textContent="数据加载中...";
+			
+			axios.get("/api/movie/search",{
+				params:{
+					q:that.key,
+					start:(that.m)*that.i,
+					count:20
+				}
+			})
 			.then(function (response) {
+				console.log("数据成功返回");
 				console.log(response);
 				that.sch=that.sch.concat(response.data.subjects);
-				if(!response.data.subjects.length){
-					that.nodatashow=true;
-				}
+				that.m=response.data.count;
+				
+				console.log(that.i);
 				that.loading=false;
+				that.canloaddata=true;
+				that.$el.querySelector('#btn-loadmore').textContent="加载更多";
+				
+				if((that.i+1)*that.m > response.data.total){
+					that.showloadmore=false;
+				}else{
+					that.showloadmore=true;
+				}
+				
+				that.i=(that.i)+1;
 			})
 			.catch(function (error) {
+				console.log("请求报错");
 				console.log(error);
 				that.loading=false;
 				that.neterrorshow=true;
+				that.canloaddata=true;
+				that.$el.querySelector('#btn-loadmore').textContent="加载更多";
 			});
 		}
 	},
@@ -69,7 +118,7 @@ export default{
 	mounted:function(){
 		console.log("mounted");
 		var key=this.$route.query.key;
-		this.getMovieBySch(key);
+		this.getMovieBySch();
 	}
 	
 }
